@@ -1,22 +1,20 @@
 package ppichler.blog.user
 
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import java.util.Optional
+import jakarta.servlet.http.HttpServletRequest
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
 @RequestMapping("/api")
 class UserController(
-        private val repo: MyUserRepository
+    private val repo: MyUserRepository,
+    private val passwordEncoder: PasswordEncoder,
 ) {
 
     @PostMapping("/users")
     fun createUser(@RequestBody user: MyUser): MyUser {
-        return repo.save(user)
+        return repo.save(MyUser(null, user.username, passwordEncoder.encode(user.password)))
     }
 
     @GetMapping("/users")
@@ -27,5 +25,10 @@ class UserController(
     @GetMapping("/users/:id")
     fun getUser(@RequestParam id: Long): Optional<MyUser> {
         return repo.findById(id)
+    }
+
+    @GetMapping("/user")
+    fun getCurrentUser(request: HttpServletRequest): String {
+        return request.userPrincipal.name
     }
 }
