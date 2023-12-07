@@ -1,4 +1,4 @@
-package ppichler.blog
+package io.github.ppichler94.blog
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

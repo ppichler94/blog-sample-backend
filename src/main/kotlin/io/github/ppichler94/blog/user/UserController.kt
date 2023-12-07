@@ -1,4 +1,4 @@
-package ppichler.blog.user
+package io.github.ppichler94.blog.user
 
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.crypto.password.PasswordEncoder

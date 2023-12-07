@@ -9,7 +9,7 @@ plugins {
     kotlin("plugin.allopen") version "1.9.20"
 }
 
-group = "ppichler"
+group = "io.github.ppichler94"
 version = "0.0.1-SNAPSHOT"
 
 java {

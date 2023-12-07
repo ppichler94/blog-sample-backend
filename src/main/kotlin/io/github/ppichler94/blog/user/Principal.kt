@@ -1,9 +1,9 @@
-package ppichler.blog.user
+package io.github.ppichler94.blog.user
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-class Principal(private val user: MyUser): UserDetails {
+class Principal(private val user: MyUser) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return mutableListOf()
     }
