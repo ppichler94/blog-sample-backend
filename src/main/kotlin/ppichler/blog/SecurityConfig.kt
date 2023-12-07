@@ -26,6 +26,7 @@ class SecurityConfig {
             cors {}
             csrf { disable() }
             authorizeRequests {
+                authorize("/api/register", permitAll)
                 authorize("/api/**", authenticated)
                 authorize("/**", permitAll)
             }

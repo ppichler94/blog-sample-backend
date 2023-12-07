@@ -12,7 +12,7 @@ class UserController(
     private val passwordEncoder: PasswordEncoder,
 ) {
 
-    @PostMapping("/users")
+    @PostMapping("/register")
     fun createUser(@RequestBody user: MyUser): MyUser {
         return repo.save(MyUser(null, user.username, passwordEncoder.encode(user.password)))
     }
