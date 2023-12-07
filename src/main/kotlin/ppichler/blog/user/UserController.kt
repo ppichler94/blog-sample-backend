@@ -29,6 +29,6 @@ class UserController(
 
     @GetMapping("/user")
     fun getCurrentUser(request: HttpServletRequest): String {
-        return request.userPrincipal.name
+        return request.userPrincipal?.name ?: "Logged Out"
     }
 }

@@ -27,6 +27,7 @@ class SecurityConfig {
             csrf { disable() }
             authorizeRequests {
                 authorize("/api/register", permitAll)
+                authorize("/api/user", permitAll)
                 authorize("/api/**", authenticated)
                 authorize("/**", permitAll)
             }
@@ -42,6 +43,9 @@ class SecurityConfig {
             }
             exceptionHandling {
                 authenticationEntryPoint = Http403ForbiddenEntryPoint()
+            }
+            logout {
+                logoutSuccessUrl = "/api/user"
             }
         }
         return http.build()
