@@ -2,6 +2,7 @@ package io.github.ppichler94.blog.user
 
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.util.Assert
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -14,6 +15,7 @@ class UserController(
 
     @PostMapping("/register")
     fun createUser(@RequestBody user: MyUser): MyUser {
+        Assert.state(repo.findByUsername(user.username).isEmpty, "Username exists already")
         return repo.save(MyUser(null, user.username, passwordEncoder.encode(user.password)))
     }
 
