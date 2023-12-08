@@ -1,9 +1,7 @@
 package io.github.ppichler94.blog.article
 
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import io.github.ppichler94.blog.user.MyUser
+import jakarta.persistence.*
 
 @Entity
 class Article(
@@ -13,4 +11,8 @@ class Article(
 
     var title: String,
     var content: String,
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "author_id",)
+    var author: MyUser
 )
