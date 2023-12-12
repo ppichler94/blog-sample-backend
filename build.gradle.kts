@@ -7,7 +7,6 @@ plugins {
     kotlin("plugin.spring") version "1.9.20"
     kotlin("plugin.jpa") version "1.9.20"
     kotlin("plugin.allopen") version "1.9.20"
-    id("idea")
 }
 
 group = "io.github.ppichler94"
@@ -15,12 +14,6 @@ version = "0.0.1-SNAPSHOT"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
-}
-
-idea {
-    module {
-        setDownloadJavadoc(true)
-    }
 }
 
 allOpen {
