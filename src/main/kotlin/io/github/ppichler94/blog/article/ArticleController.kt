@@ -3,11 +3,13 @@ package io.github.ppichler94.blog.article
 import io.github.ppichler94.blog.user.MyUserRepository
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.hateoas.CollectionModel
-import org.springframework.hateoas.EntityModel
+import org.springframework.hateoas.RepresentationModel
 import org.springframework.hateoas.server.EntityLinks
 import org.springframework.hateoas.server.ExposesResourceFor
+import org.springframework.http.HttpStatus
 import org.springframework.util.Assert
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("/api/articles")
@@ -18,31 +20,35 @@ class ArticleController(
     private val entityLinks: EntityLinks
 ) {
 
-    class ArticleDto(val id: Long?, val title: String, val content: String, val author: String?)
+    class ArticleDto(val id: Long?, val title: String, val content: String, val author: String?) :
+        RepresentationModel<ArticleDto>()
+
+    fun Article.toDto(): ArticleDto {
+        val dto = ArticleDto(id, title, content, author.username)
+        return dto.apply {
+            add(entityLinks.linkToItemResource(ArticleDto::class.java, id!!).withSelfRel())
+            add(entityLinks.linkFor(ArticleDto::class.java).withRel("articles"))
+        }
+    }
 
     @PostMapping
     fun createArticle(@RequestBody article: ArticleDto, request: HttpServletRequest): ArticleDto {
         val user = userRepo.findByUsername(request.userPrincipal.name)
         Assert.state(user.isPresent, "Unknown user logged in")
         val result = repo.save(Article(null, article.title, article.content, user.get()))
-        return ArticleDto(result.id, result.title, result.content, result.author.username)
+        return result.toDto()
     }
 
     @GetMapping
     fun getArticles(): CollectionModel<ArticleDto> {
         val articles = repo.findAll()
-            .map { ArticleDto(it.id, it.title, it.content, it.author.username) }
+            .map { it.toDto() }
         return CollectionModel.of(articles, entityLinks.linkFor(ArticleDto::class.java).withSelfRel())
     }
 
     @GetMapping("{id}")
-    fun getArticle(@PathVariable id: Long): EntityModel<ArticleDto> {
+    fun getArticle(@PathVariable id: Long): ArticleDto {
         val article = repo.findById(id)
-            .map { ArticleDto(it.id, it.title, it.content, it.author.username) }
-        return EntityModel.of(
-            article.orElseThrow(),
-            entityLinks.linkToItemResource(ArticleDto::class.java, id).withSelfRel(),
-            entityLinks.linkFor(ArticleDto::class.java).withRel("articles")
-        )
+        return article.map { it.toDto() }.orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
     }
 }
